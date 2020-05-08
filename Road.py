@@ -1,6 +1,7 @@
 import math
 import numpy as np
 
+
 class Road(object):
     U_MAX = 35 # speed limit is 35 mph
     CAR_LENGTH = 20 # unit: ft
@@ -16,6 +17,7 @@ class Road(object):
         self.u = 0
         self.p_max = road_length / Road.CAR_LENGTH
         self.p_c = self.p_max * (math.exp(-1 * Road.U_MAX / Road.CONST_C))
+        self.num_cars_leaving = 0
 
     def update_density_p(self):
         self.p = self.num_cars / self.road_length

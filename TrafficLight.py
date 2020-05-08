@@ -1,11 +1,14 @@
 
 class TrafficLight(object):
-    def __init__(self, green_light_time_len, red_light_time_len):
-        self.green_light_time_len = green_light_time_len
-        self.red_light_time_len = red_light_time_len
+    def __init__(self, green_light_time_len, red_light_time_len, from_road, to_road1, to_road2):
+        self.green_light_time_len = green_light_time_len # unit: second
+        self.red_light_time_len = red_light_time_len # unit: second
         self.last_green_time = 0
         self.last_red_time = 0
         self.is_green = False
+        self.from_road = from_road
+        self.to_road1 = to_road1
+        self.to_road2 = to_road2
 
     def turn_green(self, curr_time):
         self.is_green = True
