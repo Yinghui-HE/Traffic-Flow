@@ -1,5 +1,6 @@
 from Road import Road
 from TrafficLight import TrafficLight
+import numpy as np
 
 graph_list = []
 
@@ -44,8 +45,25 @@ def traffic_simulation():
         #     road.advance()
 
 
+def initialize_graph_list(a="  A   ", b="   B  ", c="   C  ", d="  D   ", e="   E  ", f="   F  ", gh = "|  G  |  H  |"):
+    global graph_list 
+    graph_list = np.array([["——————", "—————————————", "——————", "——————", "——————"],
+                  [a, "             ", b, "      ", c],
+                  ["------", "             ", "------", "------", "------"],
+                  [d, "             ", e, "      ", f],
+                  ["——————", "             ", "——————", "——————", "——————"],
+                  ["      ", "|     |     |", "      ", "      ", "      "],
+                  ["      ", "|     |     |", "      ", "      ", "      "],
+                  ["      ", "|     |     |", "      ", "      ", "      "],
+                  ["      ", gh, "      ", "      ", "      "],
+                  ["      ", "|     |     |", "      ", "      ", "      "],
+                  ["      ", "|     |     |", "      ", "      ", "      "],
+                  ["      ", "|     |     |", "      ", "      ", "      "],])
+    print(graph_list)
+
 def main():
     print("The beginning of traffic simulation")
+    initialize_graph_list()
     traffic_simulation()
 
 
