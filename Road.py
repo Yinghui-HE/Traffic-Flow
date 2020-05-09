@@ -1,13 +1,16 @@
 import math
 import numpy as np
+import decimal
+
 from TrafficLight import TrafficLight
 
 
 class Road(object):
     U_MAX = 51.33  # speed limit: 35 miles per hours = 51.33 ft per seconds
     CAR_LENGTH = 20  # unit: ft
-    CONST_C = 1  # can change later
+    CONST_C = 10000  # can change later
     P_MAX = 1 / CAR_LENGTH
+    P_C = P_MAX * (math.exp(-1 * U_MAX / CONST_C))
 
     def __init__(self, name, num_cars, road_length, traffic_light, traffic_light_left=None, in_rate=0):
         self.name = name
@@ -21,7 +24,6 @@ class Road(object):
         self.p = num_cars / road_length  # density
         self.is_entrance = in_rate != 0
         self.u = 0
-        self.p_c = self.P_MAX * (math.exp(-1 * Road.U_MAX / Road.CONST_C))
         self.num_cars_leaving = 0
         self.list_of_next_roads = []  # if 2 next roads, the order is: 1. next straight 2. turn
         if self.name == "H":
@@ -48,43 +50,44 @@ class Road(object):
     def get_density_p(self):
         return self.p
 
-    def calculate_velocity_u(self, next_road_density_p):
-        if next_road_density_p < self.p_c:
+    def calculate_velocity_u(self, next_road_density_p, next_road_p_c):
+        if next_road_density_p < next_road_p_c:
             self.u = Road.U_MAX
         else:
             self.u = -1 * Road.CONST_C * np.log(next_road_density_p / Road.P_MAX)
         return self.u
 
     def cars_in(self, num_cars_in):
-        self.num_cars += num_cars_in
+        self.num_cars = round(self.num_cars + num_cars_in, 2)
         self.update_density_p()
 
     def cars_out(self, num_cars_out):
         if num_cars_out > self.num_cars:  # error checking
             print("number cars leaving the road is larger than the number of cars originally on that road")
             return
-        self.num_cars -= num_cars_out
+        self.num_cars = round(self.num_cars - num_cars_out, 2)
         self.update_density_p()
 
     def calculate_num_cars_out(self, next_road, probability_choosing_road):
         next_road_velocity_u = Road.U_MAX
         next_road_spaces_for_more_cars = 100000
         if next_road is not None:
-            next_road_velocity_u = self.calculate_velocity_u(next_road.get_density_p())
+            next_road_velocity_u = self.calculate_velocity_u(next_road.get_density_p(), Road.P_C)
             next_road_spaces_for_more_cars = next_road.calculate_spaces_for_more_cars()
 
         num_cars_could_leave_per_second = (next_road_velocity_u / Road.CAR_LENGTH) * probability_choosing_road
-        num_cars_out = min(next_road_spaces_for_more_cars, num_cars_could_leave_per_second, self.num_cars)
+        num_cars_out = round(min(next_road_spaces_for_more_cars, num_cars_could_leave_per_second, self.num_cars), 2)
+        print(num_cars_out)
         return num_cars_out
 
     def advance(self):
-        if not self.traffic_light.is_green():
+        if not self.traffic_light.is_green:
             # certain cars entering the road with in_rate
             self.cars_in(self.in_rate)
             return
 
         if len(self.list_of_next_roads) == 0:
-            # TODO: end road, cars freely go out of the system
+            # end road, cars freely go out of the system
             num_cars_out = self.calculate_num_cars_out(next_road=None, probability_choosing_road=1)
             self.cars_out(num_cars_out)
             self.list_of_num_cars_out.append(num_cars_out)
@@ -115,7 +118,7 @@ class Road(object):
                 self.cars_out(num_cars_out)
                 next_road.cars_in(num_cars_out)
 
-        self.cars_in(self.in_rate)  # unit: num cars per second
+        self.cars_in(round(self.in_rate, 2))  # unit: num cars per second
 
     def __str__(self):
         msg = "Road " + self.name + "Info" \

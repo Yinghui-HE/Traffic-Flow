@@ -1,27 +1,24 @@
 
 class TrafficLight(object):
-    def __init__(self, green_light_time_len, red_light_time_len):
+    def __init__(self, green_light_time_len, red_light_time_len, is_green=False):
         self.green_light_time_len = green_light_time_len # unit: second
         self.red_light_time_len = red_light_time_len # unit: second
         self.last_green_time = 0
         self.last_red_time = 0
-        self.is_green = False
+        self.is_green = is_green
 
-    def is_green(self):
-        return self.is_green
-
-    def turn_green(self, curr_time):
+    def turn_green(self):
         self.is_green = True
-        self.last_green_time = curr_time
+        # self.last_green_time = curr_time
 
-    def turn_red(self, curr_time):
+    def turn_red(self):
         self.is_green = False
-        self.last_red_time = curr_time
+        # self.last_red_time = curr_time
 
-    def update_status(self, curr_time):
-        if self.is_green and (curr_time - self.last_green_time >= self.green_light_time_len):
-            self.turn_red(curr_time)
-        elif (not self.is_green) and (curr_time - self.last_red_time >= self.red_light_time_len):
-            self.turn_green(curr_time)
+    # def update_status(self, curr_time):
+    #     if self.is_green and (curr_time - self.last_green_time >= self.green_light_time_len):
+    #         self.turn_red(curr_time)
+    #     elif (not self.is_green) and (curr_time - self.last_red_time >= self.red_light_time_len):
+    #         self.turn_green(curr_time)
 
 
