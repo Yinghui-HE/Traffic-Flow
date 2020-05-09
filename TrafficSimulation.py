@@ -2,7 +2,7 @@ from Road import Road
 from TrafficLight import TrafficLight
 import numpy as np
 
-np.set_printoptions(precision=5)
+np.set_printoptions(linewidth=200)
 graph_list = []
 
 
@@ -12,13 +12,13 @@ def advance_all_roads(list_of_roads):
 
 def traffic_simulation():
     cycle_time_len = 180
-    traffic_light_1 = TrafficLight(green_light_time_len=60, red_light_time_len=cycle_time_len-60)
-    traffic_light_1_left = TrafficLight(green_light_time_len=30, red_light_time_len=cycle_time_len-60)
-    traffic_light_2 = TrafficLight(green_light_time_len=60, red_light_time_len=cycle_time_len-60)
-    traffic_light_3 = TrafficLight(green_light_time_len=60, red_light_time_len=cycle_time_len-60)
-    traffic_light_4 = TrafficLight(green_light_time_len=60, red_light_time_len=cycle_time_len-60)
-    traffic_light_5 = TrafficLight(green_light_time_len=60, red_light_time_len=cycle_time_len-60)
-    traffic_light_always_green =  TrafficLight(green_light_time_len=cycle_time_len, red_light_time_len=0, is_green=True)
+    traffic_light_1 = TrafficLight(name="1", green_light_time_len=60, start_green_time_in_cycle=0)
+    traffic_light_1_left = TrafficLight(name="1 Left", green_light_time_len=30, start_green_time_in_cycle=0)
+    traffic_light_2 = TrafficLight(name="2", green_light_time_len=60, start_green_time_in_cycle=0)
+    traffic_light_3 = TrafficLight(name="3", green_light_time_len=60, start_green_time_in_cycle=0)
+    traffic_light_4 = TrafficLight(name="4", green_light_time_len=60, start_green_time_in_cycle=0)
+    traffic_light_5 = TrafficLight(name="5", green_light_time_len=60, start_green_time_in_cycle=0)
+    traffic_light_always_green = TrafficLight(name="always green", green_light_time_len=cycle_time_len, start_green_time_in_cycle=0, is_green=True)
     list_of_traffic_lights = [traffic_light_1, traffic_light_2, traffic_light_3, traffic_light_4, traffic_light_5]
 
     road_a = Road(name="A", num_cars=20, road_length=572, traffic_light=traffic_light_always_green)
@@ -48,31 +48,63 @@ def traffic_simulation():
         # in a cycle: 1. tl3; 2. tl1 & tl1_left; 3. tl1, tl2
         # time for turning green for tl4 & tl5 can be changed
         curr_time = time
+        # for curr_time in range(0, cycle_time_len):
+        #     for traffic_light in list_of_traffic_lights:
+        #         traffic_light.update_status(curr_time)
+
         # 1.
         traffic_light_3.turn_green()
         for time_step in range(curr_time, curr_time+traffic_light_3.green_light_time_len):
             advance_all_roads(list_of_roads)
-            print_graph_list(road_a.num_cars, road_b.num_cars, road_c.num_cars, road_d.num_cars, road_e.num_cars,
-                             road_f.num_cars, "| " + str(road_g.num_cars)+" | " + str(road_h.num_cars) + " |")
+            print_graph_list(list_of_traffic_lights, list_of_roads)
             print()
 
 
 
 
-def print_graph_list(a="   A  ", b="   B  ", c="   C  ", d="  D   ", e="   E  ", f="   F  ", gh = "|  G  |  H  |"):
+def print_graph_list(list_of_traffic_lights=None, list_roads=None):
+    list_roads_str = ["   A  ", "   B  ", "   C  ", "  D   ", "   E  ", "   F  ", "|     |     |"]
+    list_traffic_lights_str = ["red", "red", "red", "red", "red"]
+    if list_roads is not None:
+        list_roads_str = []
+        for i in range(len(list_roads)-2):
+            list_roads_str.append((list_roads[i].name + ": " + str(list_roads[i].num_cars)).ljust(8))
+        list_roads_str.append(("| " + str(list_roads[6].num_cars).ljust(6) + " | " + str(list_roads[7].num_cars).ljust(6) + " |"))
+
+    if list_of_traffic_lights is not None:
+        list_traffic_lights_str = []
+        for traffic_light in list_of_traffic_lights:
+            list_traffic_lights_str.append(traffic_light.get_status().ljust(8))
+
     global graph_list
-    graph_list = np.array([["——————", "—————————————", "——————", "——————", "——————"],
-                  [a, "             ", b, "      ", c],
-                  ["------", "             ", "------", "------", "------"],
-                  [d, "             ", e, "      ", f],
-                  ["——————", "             ", "——————", "——————", "——————"],
-                  ["      ", "|     |     |", "      ", "      ", "      "],
-                  ["      ", "|     |     |", "      ", "      ", "      "],
-                  ["      ", "|     |     |", "      ", "      ", "      "],
-                  ["      ", gh, "      ", "      ", "      "],
-                  ["      ", "|     |     |", "      ", "      ", "      "],
-                  ["      ", "|     |     |", "      ", "      ", "      "],
-                  ["      ", "|     |     |", "      ", "      ", "      "],])
+    box_8 = "—" * 8
+    box_19 = "—" * 19
+
+    spaces_2 = " " * 2
+    spaces_7 = " " * 7
+    spaces_8 = " " * 8
+    spaces_9 = " " * 9
+    spaces_19 = " " * 19
+
+    middle_8 = "-" * 8
+    light3 = "|        |" + list_traffic_lights_str[2] + "|"
+
+    left_arrow = "<-"
+    right_arrow = "->"
+    graph_list = np.array([[spaces_2, box_8, box_8, box_19, box_8, box_8, box_8, box_8, spaces_2],
+                  [left_arrow, list_roads_str[0], spaces_8, spaces_19, list_traffic_lights_str[0], list_roads_str[1], list_traffic_lights_str[3], list_roads_str[2], left_arrow],
+                  [spaces_2, middle_8, middle_8, spaces_19, middle_8, middle_8, middle_8, middle_8, spaces_2],
+                  [right_arrow, list_roads_str[3], list_traffic_lights_str[1], spaces_19, spaces_8, list_roads_str[4], list_traffic_lights_str[4], list_roads_str[5], right_arrow],
+                  [spaces_2, box_8, box_8, light3, box_8, box_8, box_8, box_8, spaces_2],
+                  [spaces_2, spaces_8, spaces_8, "|" + spaces_8 + "|" + spaces_8 + "|", spaces_8, spaces_8, spaces_8, spaces_8, spaces_2],
+                  [spaces_2, spaces_8, spaces_8, "|" + spaces_8 + "|" + spaces_8 + "|", spaces_8, spaces_8, spaces_8, spaces_8, spaces_2],
+                  [spaces_2, spaces_8, spaces_8, "|   G    |   H    |", spaces_8, spaces_8, spaces_8, spaces_8, spaces_2],
+                  [spaces_2, spaces_8, spaces_8, list_roads_str[6],spaces_8, spaces_8, spaces_8, spaces_8, spaces_2],
+                  [spaces_2, spaces_8, spaces_8, "|" + spaces_8 + "|" + spaces_8 + "|", spaces_8, spaces_8, spaces_8, spaces_8, spaces_2],
+                  [spaces_2, spaces_8, spaces_8,  "|" + spaces_8 + "|" + spaces_8 + "|", spaces_8, spaces_8, spaces_8, spaces_8, spaces_2],
+                  [spaces_2, spaces_8, spaces_8, "|   |    |   ^    |", spaces_8, spaces_8, spaces_8, spaces_8, spaces_2],
+                  [spaces_2, spaces_8, spaces_8, "|   v    |   |    |", spaces_8, spaces_8, spaces_8, spaces_8, spaces_2],])
+
     print(graph_list)
 
 def main():
