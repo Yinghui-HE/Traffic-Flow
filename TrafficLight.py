@@ -8,7 +8,7 @@ class TrafficLight(object):
         self.is_green = False
 
     def is_green(self):
-        return self.is_green()
+        return self.is_green
 
     def turn_green(self, curr_time):
         self.is_green = True
