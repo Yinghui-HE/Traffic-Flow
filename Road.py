@@ -100,7 +100,7 @@ class Road(object):
         else:
             # have two next roads, probability
             if (self.traffic_light_left is None) \
-                    or ((self.traffic_light_left is not None) and (self.traffic_light_left.is_green())):
+                    or ((self.traffic_light_left is not None) and (self.traffic_light_left.is_green)):
                 next_road_1 = self.list_of_next_roads[0]
                 num_cars_out_1 = self.calculate_num_cars_out(
                     next_road=next_road_1, probability_choosing_road=self.probability_first_next_road)
