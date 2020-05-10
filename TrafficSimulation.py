@@ -41,12 +41,12 @@ def traffic_simulation():
     road_a = Road(name="A", num_cars=20, road_length=572, traffic_light=traffic_light_always_green)
     road_b = Road(name="B", num_cars=10, road_length=414, traffic_light=traffic_light_1,
                   traffic_light_left=traffic_light_1_left)
-    road_c = Road(name="C", num_cars=4, road_length=631, traffic_light=traffic_light_4, in_rate=0.9)
-    road_d = Road(name="D", num_cars=15, road_length=572, traffic_light=traffic_light_2, in_rate=0.2)
+    road_c = Road(name="C", num_cars=4, road_length=631, traffic_light=traffic_light_4, in_rate=2.5)
+    road_d = Road(name="D", num_cars=15, road_length=572, traffic_light=traffic_light_2, in_rate=2.5)
     road_e = Road(name="E", num_cars=8, road_length=414, traffic_light=traffic_light_5)
     road_f = Road(name="F", num_cars=18, road_length=631, traffic_light=traffic_light_always_green)
     road_g = Road(name="G", num_cars=13, road_length=643, traffic_light=traffic_light_always_green)
-    road_h = Road(name="H", num_cars=6, road_length=643, in_rate=0.3, traffic_light=traffic_light_3)
+    road_h = Road(name="H", num_cars=6, road_length=643, in_rate=2.5, traffic_light=traffic_light_3)
     list_of_roads = [road_a, road_b, road_c, road_d, road_e, road_f, road_g, road_h]
 
     list_of_end_roads = [road_a, road_f, road_g]  # cars will only leave the box freely on those roads; to calculate

@@ -60,7 +60,7 @@ class Road(object):
         return self.u
 
     def cars_in(self, num_cars_in):
-        self.num_cars = round(self.num_cars + num_cars_in, 2)
+        self.num_cars = min(round(self.num_cars + num_cars_in, 2), self.NUM_CARS_MAX)
         self.update_density_p()
 
     def cars_out(self, num_cars_out):
