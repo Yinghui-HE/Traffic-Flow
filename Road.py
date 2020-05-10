@@ -28,7 +28,7 @@ class Road(object):
             # equal probability of turning left or turning right
             self.probability_first_next_road = 0.5
         else:
-            # 90% cars will go straight, and the rest 10% will turn left or right
+            # 70% cars will go straight, and the rest 30% will turn left or right
             self.probability_first_next_road = 0.7
         self.list_of_num_cars_out = []
         self.density_list = []
