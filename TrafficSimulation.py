@@ -165,7 +165,7 @@ def traffic_simulation_with_plots(step_1_len=30, step_2_len=30, step_3_len=30, s
 
 
 # called in optimization method (each simulation, without plots)
-def one_simple_simulation(step_1_len=30, step_2_len=30, step_3_len=30, step_4_len=30, c_coef=0.3, h_coef=0.5, d_coef=0.6):
+def one_simple_simulation(step_1_len=30, step_2_len=30, step_3_len=30, step_4_len=30, c_coef=0.1, h_coef=0.1, d_coef=0.3):
     print("step_1_length=" + str(step_1_len) + ", step_2_length=" + str(step_2_len) + ", step_3_length=" + str(step_3_len) + ", step_4_length=" + str(step_4_len))
     in_rate_max = Road.U_MAX / Road.CAR_LENGTH
 
@@ -261,9 +261,41 @@ def optimization():
                 if total_outflow > max_total_outflow_value:
                     max_total_outflow_value = total_outflow
                     max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len)
+    print()
     print(max_total_outflow_tuple)
     print(max_total_outflow_value)
     return max_total_outflow_tuple
+
+def optimization_fixed_cycle_length():
+    max_total_outflow_value = -1
+    max_total_outflow_tuple = (-1, -1, -1)
+    step_4_len = 30
+    FIXED_CYCLE_LENGTH = 360
+    for step_1_len in range(10, 121, 10):
+        for step_2_len in range(10, 121, 10):
+            step_3_len = FIXED_CYCLE_LENGTH - step_1_len - step_2_len - step_4_len
+            if step_3_len > 0:
+                total_outflow = one_simple_simulation(step_1_len, step_2_len, step_3_len)
+                if total_outflow > max_total_outflow_value:
+                    max_total_outflow_value = total_outflow
+                    max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len)
+    print()
+    print(max_total_outflow_tuple)
+    print(max_total_outflow_value)
+    return max_total_outflow_tuple
+
+
+def optimization_same_length_123():
+    list_of_total_outflow = []
+    for step_1_len in range(10, 250, 10):
+        step_2_len = step_1_len
+        step_3_len = step_1_len
+        total_outflow = one_simple_simulation(step_1_len, step_2_len, step_3_len)
+        list_of_total_outflow.append(total_outflow)
+
+    print()
+    plot_graph(list_of_total_outflow, range(10, 250, 10), plot_title="Total outflow over different step length", y_label="Total outflow (num of cars)")
+
 
 def main():
     print_graph_list()
@@ -271,7 +303,9 @@ def main():
     # traffic_simulation_with_plots()
 
     # one_simple_simulation()
-    optimization()
+    # optimization()
+    optimization_same_length_123()
+    # optimization_fixed_cycle_length()
 
 
 main()
