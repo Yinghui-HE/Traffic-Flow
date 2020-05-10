@@ -1,6 +1,7 @@
 from Road import Road
 from TrafficLight import TrafficLight
 import numpy as np
+import matplotlib.pyplot as plt
 
 np.set_printoptions(linewidth=200)
 graph_list = []
@@ -10,8 +11,14 @@ def advance_all_roads(list_of_roads):
     for road in list_of_roads:
         road.advance()
 
-def plot_density(density_list, time_list):
-    pass
+def plot_density(density_list, time_list, road_name):
+    fig, ax = plt.subplots()
+    ax.plot(time_list, density_list)
+
+    ax.set(xlabel='time (s)', ylabel='density (num cars / ft)',
+           title="Density of road " + road_name + " over time")
+    ax.grid()
+    plt.show()
 
 def traffic_simulation():
     all_red_time_len = 30
@@ -56,8 +63,6 @@ def traffic_simulation():
     print_graph_list(list_of_traffic_lights, list_of_roads)
     for time in range(1, time_length, cycle_time_len):
         # in a cycle: 1. tl3; 2. tl1 & tl1_left; 3. tl1, tl2
-        # time for turning green for tl4 & tl5 can be changed
-
         for curr_time_in_cycle in range(0, cycle_time_len):
             curr_time = time + curr_time_in_cycle
             print("curr_time=" + str(curr_time))
@@ -66,7 +71,7 @@ def traffic_simulation():
             traffic_light_4.update_status_independent(curr_time)
             traffic_light_5.update_status_independent(curr_time)
 
-            # update status of light 1-3 in the cycle
+            # update status of light 1, 1L, 2, 3 in the cycle
             print("curr_time_in_cycle=" + str(curr_time_in_cycle))
             for traffic_light in list_of_dependent_traffic_lights:
                 traffic_light.update_status_in_cycle(curr_time_in_cycle)
@@ -74,6 +79,12 @@ def traffic_simulation():
             advance_all_roads(list_of_roads)
             print_graph_list(list_of_traffic_lights, list_of_roads)
             print()
+    time_list = range(0, time_length)
+
+    for road in list_of_roads:
+        print(road.density_list)
+        print(time_list)
+        plot_density(road.density_list, time_list, road.name)
 
     for end_road in list_of_end_roads:
         print(end_road.list_of_num_cars_out)
@@ -81,7 +92,7 @@ def traffic_simulation():
 
 def print_graph_list(list_of_traffic_lights=None, list_roads=None):
     list_roads_str = ["    A   ", "    B   ", "    C   ", "   D    ", "    E   ", "    F   ", "|        |        |"]
-    list_traffic_lights_str = ["1: red & 1L: red".ljust(8), "2: red".ljust(8), "3: red".ljust(8), "4: red".ljust(8), "5: red".ljust(8)]
+    list_traffic_lights_str = ["1: red & 1L: red".ljust(18), "2: red".ljust(8), "3: red".ljust(8), "4: red".ljust(8), "5: red".ljust(8)]
     if list_roads is not None:
         list_roads_str = []
         for i in range(len(list_roads)-2):

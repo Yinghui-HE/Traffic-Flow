@@ -34,6 +34,7 @@ class Road(object):
             # 90% cars will go straight, and the rest 10% will turn left or right
             self.probability_first_next_road = 0.9
         self.list_of_num_cars_out = []
+        self.density_list = []
 
     # return num of cars could still entering that road
     def calculate_spaces_for_more_cars(self):
@@ -78,48 +79,44 @@ class Road(object):
 
         num_cars_could_leave_per_second = (next_road_velocity_u / Road.CAR_LENGTH) * probability_choosing_road
         num_cars_out = round(min(next_road_spaces_for_more_cars, num_cars_could_leave_per_second, self.num_cars), 2)
-        print(num_cars_out)
         return num_cars_out
 
     def advance(self):
-        if not self.traffic_light.is_green:
-            # certain cars entering the road with in_rate
-            self.cars_in(self.in_rate)
-            return
-
-        if len(self.list_of_next_roads) == 0:
-            # end road, cars freely go out of the system
-            num_cars_out = self.calculate_num_cars_out(next_road=None, probability_choosing_road=1)
-            self.cars_out(num_cars_out)
-            self.list_of_num_cars_out.append(num_cars_out)
-        elif len(self.list_of_next_roads) == 1:
-            # if only one next road, probability = 1
-            next_road = self.list_of_next_roads[0]
-            num_cars_out = self.calculate_num_cars_out(next_road=next_road, probability_choosing_road=1)
-            self.cars_out(num_cars_out)
-            next_road.cars_in(num_cars_out)
-        else:
-            # have two next roads, probability
-            if (self.traffic_light_left is None) \
-                    or ((self.traffic_light_left is not None) and (self.traffic_light_left.is_green)):
-                next_road_1 = self.list_of_next_roads[0]
-                num_cars_out_1 = self.calculate_num_cars_out(
-                    next_road=next_road_1, probability_choosing_road=self.probability_first_next_road)
-                next_road_2 = self.list_of_next_roads[1]
-                num_cars_out_2 = self.calculate_num_cars_out(
-                    next_road=next_road_2, probability_choosing_road=1 - self.probability_first_next_road)
-                self.cars_out(num_cars_out_1 + num_cars_out_2)
-                next_road_1.cars_in(num_cars_out_1)
-                next_road_2.cars_in(num_cars_out_2)
-            else:
-                # go straight only (turn left traffic light is red)
+        if self.traffic_light.is_green:
+            if len(self.list_of_next_roads) == 0:
+                # end road, cars freely go out of the system
+                num_cars_out = self.calculate_num_cars_out(next_road=None, probability_choosing_road=1)
+                self.cars_out(num_cars_out)
+                self.list_of_num_cars_out.append(num_cars_out)
+            elif len(self.list_of_next_roads) == 1:
+                # if only one next road, probability = 1
                 next_road = self.list_of_next_roads[0]
-                num_cars_out = self.calculate_num_cars_out(next_road=next_road,
-                                                           probability_choosing_road=self.probability_first_next_road)
+                num_cars_out = self.calculate_num_cars_out(next_road=next_road, probability_choosing_road=1)
                 self.cars_out(num_cars_out)
                 next_road.cars_in(num_cars_out)
+            else:
+                # have two next roads, probability
+                if (self.traffic_light_left is None) \
+                        or ((self.traffic_light_left is not None) and (self.traffic_light_left.is_green)):
+                    next_road_1 = self.list_of_next_roads[0]
+                    num_cars_out_1 = self.calculate_num_cars_out(
+                        next_road=next_road_1, probability_choosing_road=self.probability_first_next_road)
+                    next_road_2 = self.list_of_next_roads[1]
+                    num_cars_out_2 = self.calculate_num_cars_out(
+                        next_road=next_road_2, probability_choosing_road=1 - self.probability_first_next_road)
+                    self.cars_out(num_cars_out_1 + num_cars_out_2)
+                    next_road_1.cars_in(num_cars_out_1)
+                    next_road_2.cars_in(num_cars_out_2)
+                else:
+                    # go straight only (turn left traffic light is red)
+                    next_road = self.list_of_next_roads[0]
+                    num_cars_out = self.calculate_num_cars_out(next_road=next_road,
+                                                               probability_choosing_road=self.probability_first_next_road)
+                    self.cars_out(num_cars_out)
+                    next_road.cars_in(num_cars_out)
 
         self.cars_in(round(self.in_rate, 2))  # unit: num cars per second
+        self.density_list.append(self.p)
 
     def __str__(self):
         msg = "Road " + self.name + "Info" \
