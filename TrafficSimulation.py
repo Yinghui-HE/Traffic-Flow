@@ -21,6 +21,7 @@ def plot_graph(y_list, time_list, plot_title, y_label):
     ax.grid()
     plt.show()
 
+# individual simulation with graphs
 def traffic_simulation():
     all_red_time_len = 30
     in_rate_max = Road.U_MAX / Road.CAR_LENGTH
@@ -152,6 +153,8 @@ def print_graph_list(list_of_traffic_lights=None, list_roads=None):
 
     print(graph_list)
 
+
+# called in optimization method (each simulation, without plots)
 def one_simple_simulation(step_1_len=30, step_2_len=30, step_3_len=30, step_4_len=30, c_coef=0.3, h_coef=0.5, d_coef=0.6):
     print("step_1_length=" + str(step_1_len) + ", step_2_length=" + str(step_2_len) + ", step_3_length=" + str(step_3_len) + ", step_4_length=" + str(step_4_len))
     in_rate_max = Road.U_MAX / Road.CAR_LENGTH
@@ -162,6 +165,9 @@ def one_simple_simulation(step_1_len=30, step_2_len=30, step_3_len=30, step_4_le
     length_1_straight = step_3_len
     length_1 = length_1_left + length_1_straight
     length_2 = length_1_straight
+
+    length_45_green = 180
+    length_45_red = 20
 
     traffic_light_3 = TrafficLight(name="3", green_light_time_len=length_3, start_green_time_in_cycle=0)
     traffic_light_1 = TrafficLight(name="1", green_light_time_len=length_1,
@@ -175,7 +181,7 @@ def one_simple_simulation(step_1_len=30, step_2_len=30, step_3_len=30, step_4_le
     list_of_dependent_traffic_lights = [traffic_light_1, traffic_light_1_left, traffic_light_2, traffic_light_3]
 
     traffic_light_4 = TrafficLight(name="4", green_light_time_len=length_45_green, red_light_time_len=length_45_red)
-    traffic_light_5 = TrafficLight(name="5", green_light_time_len=5, red_light_time_len=2)
+    traffic_light_5 = TrafficLight(name="5", green_light_time_len=length_45_green, red_light_time_len=length_45_red)
 
     traffic_light_always_green = TrafficLight(name="always green", green_light_time_len=cycle_time_len,
                                               start_green_time_in_cycle=0, is_green=True)
