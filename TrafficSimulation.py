@@ -51,13 +51,16 @@ def traffic_simulation():
     for time in range(1, time_length, cycle_time_len):
         # in a cycle: 1. tl3; 2. tl1 & tl1_left; 3. tl1, tl2
         # time for turning green for tl4 & tl5 can be changed
-        curr_time = time
         for curr_time in range(0, cycle_time_len):
+            print("curr_time=" + curr_time)
             for traffic_light in list_of_traffic_lights:
                 traffic_light.update_status(curr_time)
             advance_all_roads(list_of_roads)
             print_graph_list(list_of_traffic_lights, list_of_roads)
             print()
+
+    for end_road in list_of_end_roads:
+        print(end_road.list_of_num_cars_out)
 
 
 def print_graph_list(list_of_traffic_lights=None, list_roads=None):
@@ -106,8 +109,8 @@ def print_graph_list(list_of_traffic_lights=None, list_roads=None):
     print(graph_list)
 
 def main():
+    print_graph_list()
     print("The beginning of traffic simulation")
-    # print_graph_list()
     traffic_simulation()
 
 
