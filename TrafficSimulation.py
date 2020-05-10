@@ -12,6 +12,7 @@ def advance_all_roads(list_of_roads):
 
 def traffic_simulation():
     all_red_time_len = 30
+    in_rate_max = Road.U_MAX
     traffic_light_3 = TrafficLight(name="3", green_light_time_len=30, start_green_time_in_cycle=0)
     traffic_light_1 = TrafficLight(name="1", green_light_time_len=60, start_green_time_in_cycle=traffic_light_3.end_green_time_in_cycle)
     traffic_light_1_left = TrafficLight(name="1 Left", green_light_time_len=30, start_green_time_in_cycle=traffic_light_3.end_green_time_in_cycle)
@@ -44,7 +45,7 @@ def traffic_simulation():
     road_e.set_next_roads([road_f])
     road_h.set_next_roads([road_a, road_e])
 
-    time_length = 120  # 30 minutes = 1800 seconds
+    time_length = 240  # 30 minutes = 1800 seconds
     cycle = [[traffic_light_3],
              [traffic_light_1, traffic_light_1_left],
              [traffic_light_1, traffic_light_2]]
