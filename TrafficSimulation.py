@@ -11,12 +11,13 @@ def advance_all_roads(list_of_roads):
     for road in list_of_roads:
         road.advance()
 
-def plot_density(density_list, time_list, road_name):
-    fig, ax = plt.subplots()
-    ax.plot(time_list, density_list)
 
-    ax.set(xlabel='time (s)', ylabel='density (num cars / ft)',
-           title="Density of road " + road_name + " over time")
+def plot_graph(y_list, time_list, plot_title, y_label):
+    fig, ax = plt.subplots()
+    ax.plot(time_list, y_list)
+
+    ax.set(xlabel='time (s)', ylabel=y_label,
+           title=plot_title)
     ax.grid()
     plt.show()
 
@@ -81,13 +82,18 @@ def traffic_simulation():
             print()
     time_list = range(0, time_length)
 
+    for end_road in list_of_end_roads:
+        print(end_road.list_of_num_cars_out)
+    road_outflow = np.array([road_a.list_of_num_cars_out, road_f.list_of_num_cars_out, road_g.list_of_num_cars_out])
+    sum_outflow = road_outflow.sum(axis=0)
+    print(sum_outflow)
+    plot_graph(sum_outflow, time_list, plot_title="Traffic outflow over time", y_label="total traffic (num cars)")
     for road in list_of_roads:
         print(road.density_list)
         print(time_list)
-        plot_density(road.density_list, time_list, road.name)
+        plot_graph(road.density_list, time_list, plot_title="Density of road " + road.name + " over time", y_label='density (num cars / ft)')
 
-    for end_road in list_of_end_roads:
-        print(end_road.list_of_num_cars_out)
+
 
 
 def print_graph_list(list_of_traffic_lights=None, list_roads=None):
