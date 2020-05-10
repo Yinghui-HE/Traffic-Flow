@@ -52,7 +52,7 @@ def traffic_simulation():
         # in a cycle: 1. tl3; 2. tl1 & tl1_left; 3. tl1, tl2
         # time for turning green for tl4 & tl5 can be changed
         for curr_time in range(0, cycle_time_len):
-            print("curr_time=" + curr_time)
+            print("curr_time=" + str(curr_time))
             for traffic_light in list_of_traffic_lights:
                 traffic_light.update_status(curr_time)
             advance_all_roads(list_of_roads)
