@@ -20,7 +20,7 @@ class TrafficLight(object):
         self.is_green = False
 
     def update_status(self, curr_time_in_cycle):
-        if self.is_green and curr_time_in_cycle > self.start_green_time_in_cycle:
+        if self.is_green and curr_time_in_cycle > self.end_green_time_in_cycle:
             self.turn_red()
             print("Traffic Light " + self.name + " Turns Red.")
         elif (not self.is_green) and curr_time_in_cycle >= self.start_green_time_in_cycle and curr_time_in_cycle <= self.end_green_time_in_cycle:
