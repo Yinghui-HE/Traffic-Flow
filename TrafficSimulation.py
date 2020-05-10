@@ -153,6 +153,7 @@ def print_graph_list(list_of_traffic_lights=None, list_roads=None):
 
     print(graph_list)
 
+
 # called in optimization method (each simulation, without plots)
 def one_simple_simulation(step_1_len=30, step_2_len=30, step_3_len=30, step_4_len=30, c_coef=0.3, h_coef=0.5, d_coef=0.6):
     print("step_1_length=" + str(step_1_len) + ", step_2_length=" + str(step_2_len) + ", step_3_length=" + str(step_3_len) + ", step_4_length=" + str(step_4_len))
@@ -166,6 +167,7 @@ def one_simple_simulation(step_1_len=30, step_2_len=30, step_3_len=30, step_4_le
     length_1_straight = step_3_len
     length_1 = length_1_left + length_1_straight
     length_2 = length_1_straight
+
     length_45_green = 0
     length_45_red = time_length
 
