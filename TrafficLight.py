@@ -28,7 +28,7 @@ class TrafficLight(object):
         if self.is_green and (curr_time - self.last_green_time >= self.green_light_time_len):
             self.turn_red()
             self.last_red_time = curr_time
-        elif (not self.is_green) and (curr_time - self.last_red_time >= self.red_light_time_len):
+        elif (not self.is_green) and (curr_time - self.last_red_time > self.red_light_time_len):
             self.turn_green()
             self.last_green_time = curr_time
 

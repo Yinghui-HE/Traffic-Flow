@@ -6,7 +6,7 @@ from TrafficLight import TrafficLight
 class Road(object):
     U_MAX = 51.33  # speed limit: 35 miles per hours = 51.33 ft per seconds
     CAR_LENGTH = 20  # unit: ft
-    CONST_C = 10000  # can change later
+    CONST_C = 10  # can change later
     P_MAX = 1 / CAR_LENGTH
     P_C = P_MAX * (math.exp(-1 * U_MAX / CONST_C))
 
@@ -26,10 +26,11 @@ class Road(object):
         self.list_of_next_roads = []  # if 2 next roads, the order is: 1. next straight 2. turn
         if self.name == "H":
             # equal probability of turning left or turning right
-            self.probability_first_next_road = 0.5
+            # self.probability_first_next_road = 0.5
+            self.probability_first_next_road = 0 # always turning right
         else:
             # 90% cars will go straight, and the rest 10% will turn left or right
-            self.probability_first_next_road = 0.9
+            self.probability_first_next_road = 1
         self.list_of_num_cars_out = []
         self.density_list = []
 
@@ -68,7 +69,7 @@ class Road(object):
 
     def calculate_num_cars_out(self, next_road, probability_choosing_road):
         next_road_velocity_u = Road.U_MAX
-        next_road_spaces_for_more_cars = 100000
+        next_road_spaces_for_more_cars = 1000000000
         if next_road is not None:
             next_road_velocity_u = self.calculate_velocity_u(next_road.get_density_p(), Road.P_C)
             next_road_spaces_for_more_cars = next_road.calculate_spaces_for_more_cars()

@@ -158,14 +158,16 @@ def one_simple_simulation(step_1_len=30, step_2_len=30, step_3_len=30, step_4_le
     print("step_1_length=" + str(step_1_len) + ", step_2_length=" + str(step_2_len) + ", step_3_length=" + str(step_3_len) + ", step_4_length=" + str(step_4_len))
     in_rate_max = Road.U_MAX / Road.CAR_LENGTH
 
+    time_length = 360  # 30 minutes = 1800 seconds
+
     all_red_time_len = step_4_len
     length_3 = step_1_len
     length_1_left = step_2_len
     length_1_straight = step_3_len
     length_1 = length_1_left + length_1_straight
     length_2 = length_1_straight
-    length_45_green = 180
-    length_45_red = 20
+    length_45_green = 0
+    length_45_red = time_length
 
     traffic_light_3 = TrafficLight(name="3", green_light_time_len=length_3, start_green_time_in_cycle=0)
     traffic_light_1 = TrafficLight(name="1", green_light_time_len=length_1,
@@ -186,15 +188,15 @@ def one_simple_simulation(step_1_len=30, step_2_len=30, step_3_len=30, step_4_le
     list_of_traffic_lights = [traffic_light_1, traffic_light_1_left, traffic_light_2, traffic_light_3, traffic_light_4,
                               traffic_light_5]
 
-    road_a = Road(name="A", num_cars=20, road_length=572, traffic_light=traffic_light_always_green)
-    road_b = Road(name="B", num_cars=10, road_length=414, traffic_light=traffic_light_1,
+    road_a = Road(name="A", num_cars=0, road_length=572, traffic_light=traffic_light_always_green)
+    road_b = Road(name="B", num_cars=0, road_length=414, traffic_light=traffic_light_1,
                   traffic_light_left=traffic_light_1_left)
-    road_c = Road(name="C", num_cars=4, road_length=631, traffic_light=traffic_light_4, in_rate=in_rate_max*c_coef)
-    road_d = Road(name="D", num_cars=15, road_length=572, traffic_light=traffic_light_2, in_rate=in_rate_max*d_coef)
-    road_e = Road(name="E", num_cars=8, road_length=414, traffic_light=traffic_light_5)
-    road_f = Road(name="F", num_cars=18, road_length=631, traffic_light=traffic_light_always_green)
-    road_g = Road(name="G", num_cars=13, road_length=643, traffic_light=traffic_light_always_green)
-    road_h = Road(name="H", num_cars=6, road_length=643, in_rate=in_rate_max*h_coef, traffic_light=traffic_light_3)
+    road_c = Road(name="C", num_cars=0, road_length=631, traffic_light=traffic_light_4, in_rate=in_rate_max*c_coef)
+    road_d = Road(name="D", num_cars=0, road_length=572, traffic_light=traffic_light_2, in_rate=in_rate_max*d_coef)
+    road_e = Road(name="E", num_cars=0, road_length=414, traffic_light=traffic_light_5)
+    road_f = Road(name="F", num_cars=0, road_length=631, traffic_light=traffic_light_always_green)
+    road_g = Road(name="G", num_cars=0, road_length=643, traffic_light=traffic_light_always_green)
+    road_h = Road(name="H", num_cars=0, road_length=643, in_rate=in_rate_max*h_coef, traffic_light=traffic_light_3)
     list_of_roads = [road_a, road_b, road_c, road_d, road_e, road_f, road_g, road_h]
 
     list_of_end_roads = [road_a, road_f, road_g]  # cars will only leave the box freely on those roads; to calculate
@@ -205,28 +207,37 @@ def one_simple_simulation(step_1_len=30, step_2_len=30, step_3_len=30, step_4_le
     road_e.set_next_roads([road_f])
     road_h.set_next_roads([road_a, road_e])
 
-    time_length = 3600  # 30 minutes = 1800 seconds
     # print_graph_list(list_of_traffic_lights, list_of_roads)
     for time in range(1, time_length, cycle_time_len):
         # in a cycle: 1. tl3; 2. tl1 & tl1_left; 3. tl1, tl2
-        for curr_time_in_cycle in range(0, cycle_time_len):
+        for curr_time_in_cycle in range(0, min(cycle_time_len, time_length-time+1)):
             curr_time = time + curr_time_in_cycle
+            # print("curr_time=" + str(curr_time))
             # update the status of light 4 and light 5 (independent of cycle)
             traffic_light_4.update_status_independent(curr_time)
             traffic_light_5.update_status_independent(curr_time)
+
+            # print("curr_time_in_cycle=" + str(curr_time_in_cycle))
             # update status of light 1, 1L, 2, 3 in the cycle
             for traffic_light in list_of_dependent_traffic_lights:
                 traffic_light.update_status_in_cycle(curr_time_in_cycle)
             advance_all_roads(list_of_roads)
+            # print_graph_list(list_of_traffic_lights, list_of_roads)
     # plot traffic outflow (num of cars out of system) over time
     road_outflow = np.array([road_a.list_of_num_cars_out, road_f.list_of_num_cars_out, road_g.list_of_num_cars_out])
     sum_outflow = road_outflow.sum(axis=0)
     total_outflow = sum_outflow.sum()
     print(total_outflow)
+
+    time_list = range(0, time_length)
+    # plot_graph(sum_outflow, time_list, plot_title="Traffic outflow over time", y_label="total traffic (num cars)")
+
+    # # plot densities of roads over time
+    # for road in list_of_roads:
+    #     plot_graph(road.density_list, time_list, plot_title="Density of road " + road.name + " over time",
+    #                y_label='density (num cars / ft)')
     return total_outflow
 
-    # time_list = range(0, time_length)
-    # plot_graph(sum_outflow, time_list, plot_title="Traffic outflow over time", y_label="total traffic (num cars)")
 
 def optimization():
     max_total_outflow_value = -1
@@ -239,6 +250,7 @@ def optimization():
                     max_total_outflow_value = total_outflow
                     max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len)
     print(max_total_outflow_tuple)
+    print(max_total_outflow_value)
     return max_total_outflow_tuple
 
 def main():
