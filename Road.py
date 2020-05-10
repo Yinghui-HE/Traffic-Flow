@@ -1,10 +1,7 @@
 import math
 import numpy as np
 import decimal
-
 from TrafficLight import TrafficLight
-
-# hello
 
 class Road(object):
     U_MAX = 51.33  # speed limit: 35 miles per hours = 51.33 ft per seconds
@@ -65,8 +62,7 @@ class Road(object):
 
     def cars_out(self, num_cars_out):
         if num_cars_out > self.num_cars:  # error checking
-            print("number cars leaving the road is larger than the number of cars originally on that road")
-            return
+            num_cars_out = self.num_cars
         self.num_cars = round(self.num_cars - num_cars_out, 2)
         self.update_density_p()
 

@@ -18,11 +18,11 @@ class TrafficLight(object):
 
     def turn_green(self):
         self.is_green = True
-        print("Traffic Light " + self.name + " Turns Green.")
+        # print("Traffic Light " + self.name + " Turns Green.")
 
     def turn_red(self):
         self.is_green = False
-        print("Traffic Light " + self.name + " Turns Red.")
+        # print("Traffic Light " + self.name + " Turns Red.")
 
     def update_status_independent(self, curr_time):
         if self.is_green and (curr_time - self.last_green_time >= self.green_light_time_len):
