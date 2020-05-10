@@ -26,11 +26,10 @@ class Road(object):
         self.list_of_next_roads = []  # if 2 next roads, the order is: 1. next straight 2. turn
         if self.name == "H":
             # equal probability of turning left or turning right
-            # self.probability_first_next_road = 0.5
-            self.probability_first_next_road = 0 # always turning right
+            self.probability_first_next_road = 0.5
         else:
             # 90% cars will go straight, and the rest 10% will turn left or right
-            self.probability_first_next_road = 1
+            self.probability_first_next_road = 0.9
         self.list_of_num_cars_out = []
         self.density_list = []
 
