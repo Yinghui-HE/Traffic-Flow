@@ -10,18 +10,23 @@ def advance_all_roads(list_of_roads):
     for road in list_of_roads:
         road.advance()
 
+def plot_density(density_list, time_list):
+    pass
+
 def traffic_simulation():
     all_red_time_len = 30
-    in_rate_max = Road.U_MAX
+    in_rate_max = Road.U_MAX / Road.CAR_LENGTH
     traffic_light_3 = TrafficLight(name="3", green_light_time_len=30, start_green_time_in_cycle=0)
     traffic_light_1 = TrafficLight(name="1", green_light_time_len=60, start_green_time_in_cycle=traffic_light_3.end_green_time_in_cycle)
     traffic_light_1_left = TrafficLight(name="1 Left", green_light_time_len=30, start_green_time_in_cycle=traffic_light_3.end_green_time_in_cycle)
     traffic_light_2 = TrafficLight(name="2", green_light_time_len=30, start_green_time_in_cycle=traffic_light_1_left.end_green_time_in_cycle)
     cycle_time_len = traffic_light_2.end_green_time_in_cycle + all_red_time_len
     print("cycle_time_len=" + str(cycle_time_len))
+    list_of_dependent_traffic_lights = [traffic_light_1, traffic_light_1_left, traffic_light_2, traffic_light_3]
 
-    traffic_light_4 = TrafficLight(name="4", green_light_time_len=60, start_green_time_in_cycle=0)
-    traffic_light_5 = TrafficLight(name="5", green_light_time_len=60, start_green_time_in_cycle=0)
+
+    traffic_light_4 = TrafficLight(name="4", green_light_time_len=5, red_light_time_len=2)
+    traffic_light_5 = TrafficLight(name="5", green_light_time_len=5, red_light_time_len=2)
 
     traffic_light_always_green = TrafficLight(name="always green", green_light_time_len=cycle_time_len, start_green_time_in_cycle=0, is_green=True)
     list_of_traffic_lights = [traffic_light_1, traffic_light_2, traffic_light_3, traffic_light_4, traffic_light_5]
@@ -50,14 +55,23 @@ def traffic_simulation():
              [traffic_light_1, traffic_light_1_left],
              [traffic_light_1, traffic_light_2]]
     print_graph_list(list_of_traffic_lights, list_of_roads)
-    for time in range(0, time_length, cycle_time_len):
+    for time in range(1, time_length, cycle_time_len):
         # in a cycle: 1. tl3; 2. tl1 & tl1_left; 3. tl1, tl2
         # time for turning green for tl4 & tl5 can be changed
-        print("time=" + str(time))
+
         for curr_time_in_cycle in range(0, cycle_time_len):
+            curr_time = time + curr_time_in_cycle
+            print("curr_time=" + str(curr_time))
+
+            # update the status of light 4 and light 5 (independent of cycle)
+            traffic_light_4.update_status_independent(curr_time)
+            traffic_light_5.update_status_independent(curr_time)
+
+            # update status of light 1-3 in the cycle
             print("curr_time_in_cycle=" + str(curr_time_in_cycle))
-            for traffic_light in list_of_traffic_lights:
-                traffic_light.update_status(curr_time_in_cycle)
+            for traffic_light in list_of_dependent_traffic_lights:
+                traffic_light.update_status_in_cycle(curr_time_in_cycle)
+
             advance_all_roads(list_of_roads)
             print_graph_list(list_of_traffic_lights, list_of_roads)
             print()
