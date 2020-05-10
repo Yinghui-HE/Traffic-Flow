@@ -81,9 +81,11 @@ class Road(object):
         if self.traffic_light.is_green:
             if len(self.list_of_next_roads) == 0:
                 # end road, cars freely go out of the system
+                self.density_list.append(self.p)
                 num_cars_out = self.calculate_num_cars_out(next_road=None, probability_choosing_road=1)
                 self.cars_out(num_cars_out)
                 self.list_of_num_cars_out.append(num_cars_out)
+                return
             elif len(self.list_of_next_roads) == 1:
                 # if only one next road, probability = 1
                 next_road = self.list_of_next_roads[0]

@@ -178,8 +178,10 @@ def traffic_simulation_with_plots(step_1_len=30, step_2_len=30, step_3_len=30, s
     for road in list_of_roads:
         list_of_density_lists.append(road.density_list[START:END])
         road_name_list.append(road.name)
-    plot_list_of_density_graphs(list_of_density_lists, TIME, road_name_list)
+        # if need to print the plots seperately for each road, uncomment the next line
         # plot_graph(road.density_list, time_list, plot_title="Density of road " + road.name + " over time", y_label='density (num cars / ft)')
+
+    plot_list_of_density_graphs(list_of_density_lists, TIME, road_name_list)
 
 
 # called in optimization method (each simulation, without plots)
