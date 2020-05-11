@@ -319,23 +319,25 @@ def optimization_same_length_123(traffic_condition, dict_traffic_coef):
         list_of_total_outflow.append(total_outflow)
 
     print()
-    plot_graph(list_of_total_outflow, time_range, plot_title="Total outflow over different step length", y_label="Total outflow (num of cars)")
+    plot_graph(list_of_total_outflow, time_range, plot_title="Total outflow over different step length", y_label="Total outflow (num of cars)", traffic_condition=traffic_condition)
 
 
 def main():
     print_graph_list()
     print("The beginning of traffic simulation")
 
+    # coefficient order: c, d, h
     DICT_TRAFFIC_COEF = {
-        "light": [0.1, 0.1, 0.3],
-        "medium": [0.3, 0.5, 0.6],
+        "light": [0.1, 0.3, 0.1],
+        # "medium": [0.3, 0.5, 0.6],
+        "medium": [0.3, 0.6, 0.5],
         "heavy": [1, 1, 1]
     }
-    TRAFFIC_CONDITION = "medium"
+    TRAFFIC_CONDITION = "light"
     # traffic_simulation_with_plots(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
     # one_simple_simulation(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
-    optimization(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
-    # optimization_same_length_123(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
+    # optimization(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
+    optimization_same_length_123(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
     # optimization_fixed_cycle_length(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
 
 
