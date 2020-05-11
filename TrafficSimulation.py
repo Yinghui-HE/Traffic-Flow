@@ -6,32 +6,31 @@ import matplotlib.pyplot as plt
 np.set_printoptions(linewidth=200)
 graph_list = []
 
-
 def advance_all_roads(list_of_roads):
     for road in list_of_roads:
         road.advance()
 
 
-def plot_list_of_density_graphs(list_of_density_lists, time_list, label_list, traffic_condition):
+def plot_list_of_density_graphs(list_of_density_lists, time_list, label_list, traffic_condition, coef_info=""):
     fig, ax = plt.subplots()
 
     for density_list in list_of_density_lists:
         ax.plot(time_list, density_list)
 
-    plt.legend(label_list)
+    plt.legend(label_list, loc='right')
     ax.set(xlabel='time (s)', ylabel='density (num cars / ft)',
-           title="Density of roads over time" + " (" + traffic_condition + " traffic)")
+           title="Density of roads over time" + " (" + traffic_condition + " traffic)\n" + coef_info)
 
     ax.grid()
     plt.show()
 
 
-def plot_graph(y_list, time_list, plot_title, y_label, traffic_condition):
+def plot_graph(y_list, time_list, plot_title, y_label, traffic_condition, coef_info=""):
     fig, ax = plt.subplots()
     ax.plot(time_list, y_list)
 
     ax.set(xlabel='time (s)', ylabel=y_label,
-           title=plot_title + " (" + traffic_condition + " traffic)")
+           title=plot_title + " (" + traffic_condition + " traffic)\n" + coef_info)
     ax.grid()
     plt.show()
 
@@ -93,6 +92,7 @@ def traffic_simulation_with_plots(traffic_condition, dict_traffic_coef, traffic_
     c_coef = traffic_coef_list[0]
     d_coef = traffic_coef_list[1]
     h_coef = traffic_coef_list[2]
+    coef_info = "(c_coef, d_coef, h_coef) = (" + str(c_coef) + ", " + str(d_coef) + ", " + str(h_coef) + ")"
 
     TIME_LENGTH = 1200  # 20 minutes = 1200 seconds
     traffic_45_green = traffic_45_green
@@ -170,7 +170,7 @@ def traffic_simulation_with_plots(traffic_condition, dict_traffic_coef, traffic_
     road_outflow = np.array([road_a.list_of_num_cars_out, road_f.list_of_num_cars_out, road_g.list_of_num_cars_out])
     sum_outflow = road_outflow.sum(axis=0)
     print(sum_outflow)
-    plot_graph(sum_outflow, time_list, plot_title="Traffic outflow over time", y_label="total traffic (num cars)", traffic_condition=traffic_condition)
+    plot_graph(sum_outflow, time_list, plot_title="Traffic outflow over time", y_label="total traffic (num cars)", traffic_condition=traffic_condition, coef_info=coef_info)
     total_outflow = sum_outflow.sum()
     print(total_outflow)
 
@@ -185,21 +185,21 @@ def traffic_simulation_with_plots(traffic_condition, dict_traffic_coef, traffic_
         road_name_list.append(road.name)
         # if need to print the plots seperately for each road, uncomment the next line
         # plot_graph(road.density_list, time_list, plot_title="Density of road " + road.name + " over time", y_label='density (num cars / ft)')
-    plot_list_of_density_graphs(list_of_density_lists, DENSITY_TIME, road_name_list, traffic_condition)
+    plot_list_of_density_graphs(list_of_density_lists, DENSITY_TIME, road_name_list, traffic_condition, coef_info)
 
-    # plot velocities of roads over time
-    VELOCITY_START = 0
-    VELOCITY_END = 300
-    VELOCITY_TIME = range(VELOCITY_START, VELOCITY_END)
-    list_of_velocity_lists = []
-    road_name_list = []
-    for road in list_of_roads:
-        list_of_velocity_lists.append(road.velocity_list[VELOCITY_START:VELOCITY_END])
-        road_name_list.append(road.name)
-        # if need to print the plots seperately for each road, uncomment the next line
-        # plot_graph(road.density_list, time_list, plot_title="Density of road " + road.name + " over time", y_label='density (num cars / ft)')
-
-    plot_list_of_density_graphs(list_of_velocity_lists, VELOCITY_TIME, road_name_list, traffic_condition)
+    # # plot velocities of roads over time
+    # VELOCITY_START = 0
+    # VELOCITY_END = 300
+    # VELOCITY_TIME = range(VELOCITY_START, VELOCITY_END)
+    # list_of_velocity_lists = []
+    # road_name_list = []
+    # for road in list_of_roads:
+    #     list_of_velocity_lists.append(road.velocity_list[VELOCITY_START:VELOCITY_END])
+    #     road_name_list.append(road.name)
+    #     # if need to print the plots seperately for each road, uncomment the next line
+    #     # plot_graph(road.density_list, time_list, plot_title="Density of road " + road.name + " over time", y_label='density (num cars / ft)')
+    #
+    # plot_list_of_density_graphs(list_of_velocity_lists, VELOCITY_TIME, road_name_list, traffic_condition)
 
 
 # called in optimization method (each simulation, without plots)

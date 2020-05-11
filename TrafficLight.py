@@ -1,4 +1,4 @@
-
+# TrafficLight class.
 class TrafficLight(object):
     def __init__(self, name, green_light_time_len, start_green_time_in_cycle=0, is_green=False, red_light_time_len=0):
         self.name = name

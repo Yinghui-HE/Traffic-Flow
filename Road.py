@@ -3,6 +3,8 @@ import numpy as np
 import decimal
 from TrafficLight import TrafficLight
 
+
+# Road class
 class Road(object):
     U_MAX = 51.33  # speed limit: 35 miles per hours = 51.33 ft per seconds
     CAR_LENGTH = 20  # unit: ft
