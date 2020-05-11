@@ -247,7 +247,6 @@ def one_simple_simulation(traffic_condition, dict_traffic_coef, step_1_len=30, s
     road_e.set_next_roads([road_f])
     road_h.set_next_roads([road_a, road_e])
 
-    print_graph_list(list_of_traffic_lights, list_of_roads)
     for time in range(1, TIME_LENGTH, cycle_time_len):
         # in a cycle: 1. tl3; 2. tl1 & tl1_left; 3. tl1, tl2
         for curr_time_in_cycle in range(0, min(cycle_time_len, TIME_LENGTH-time+1)):
@@ -268,6 +267,8 @@ def one_simple_simulation(traffic_condition, dict_traffic_coef, step_1_len=30, s
 
     time_list = range(0, TIME_LENGTH)
     # plot_graph(sum_outflow, time_list, plot_title="Traffic outflow over time", y_label="total traffic (num cars)", traffic_condition=traffic_condition)
+
+    # print_graph_list(list_of_traffic_lights, list_of_roads)
 
     return total_outflow
 
@@ -330,10 +331,10 @@ def main():
         "medium": [0.3, 0.5, 0.6],
         "heavy": [1, 1, 1]
     }
-    TRAFFIC_CONDITION = "heavy"
-    traffic_simulation_with_plots(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
+    TRAFFIC_CONDITION = "medium"
+    # traffic_simulation_with_plots(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
     # one_simple_simulation(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
-    # optimization(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
+    optimization(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
     # optimization_same_length_123(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
     # optimization_fixed_cycle_length(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
 
