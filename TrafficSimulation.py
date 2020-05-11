@@ -204,7 +204,7 @@ def traffic_simulation_with_plots(traffic_condition, dict_traffic_coef, traffic_
 
 # called in optimization method (each simulation, without plots)
 def one_simple_simulation(traffic_condition, dict_traffic_coef, traffic_45_green=180, step_1_len=30, step_2_len=30, step_3_len=30, step_4_len=40, ):
-    # print("step_1_length=" + str(step_1_len) + ", step_2_length=" + str(step_2_len) + ", step_3_length=" + str(step_3_len) + ", step_4_length=" + str(step_4_len) + ", traffic_45_green=" + str(traffic_45_green))
+    print("step_1_length=" + str(step_1_len) + ", step_2_length=" + str(step_2_len) + ", step_3_length=" + str(step_3_len) + ", step_4_length=" + str(step_4_len) + ", traffic_45_green=" + str(traffic_45_green))
     in_rate_max = Road.U_MAX / Road.CAR_LENGTH
     traffic_coef_list = dict_traffic_coef[traffic_condition]
     c_coef = traffic_coef_list[0]
@@ -230,7 +230,7 @@ def one_simple_simulation(traffic_condition, dict_traffic_coef, traffic_45_green
     traffic_light_2 = TrafficLight(name="2", green_light_time_len=length_2,
                                    start_green_time_in_cycle=traffic_light_1_left.end_green_time_in_cycle)
     cycle_time_len = traffic_light_2.end_green_time_in_cycle + all_red_time_len
-    # print("cycle_time_len=" + str(cycle_time_len))
+
     list_of_dependent_traffic_lights = [traffic_light_1, traffic_light_1_left, traffic_light_2, traffic_light_3]
 
     traffic_light_4 = TrafficLight(name="4", green_light_time_len=traffic_45_green, red_light_time_len=LENGTH_45_RED)
@@ -276,7 +276,7 @@ def one_simple_simulation(traffic_condition, dict_traffic_coef, traffic_45_green
     road_outflow = np.array([road_a.list_of_num_cars_out, road_f.list_of_num_cars_out, road_g.list_of_num_cars_out])
     sum_outflow = road_outflow.sum(axis=0)
     total_outflow = sum_outflow.sum()
-    # print(total_outflow)
+    print(total_outflow)
 
     time_list = range(0, TIME_LENGTH)
     # plot_graph(sum_outflow, time_list, plot_title="Traffic outflow over time", y_label="total traffic (num cars)", traffic_condition=traffic_condition)
@@ -294,14 +294,14 @@ def optimization(traffic_condition, dict_traffic_coef):
     for step_1_len in range(10, 121, 10):
         for step_2_len in range(10, 121, 10):
             for step_3_len in range(10, 121, 10):
-                for traffic_45_green in range(60, 181, 30):
-                    total_outflow = one_simple_simulation(traffic_condition, dict_traffic_coef, traffic_45_green, step_1_len, step_2_len, step_3_len)
-                # total_outflow = one_simple_simulation(traffic_condition, dict_traffic_coef,
-                #                                       step_1_len=step_1_len, step_2_len=step_2_len, step_3_len=step_3_len)
-                    if total_outflow > max_total_outflow_value:
-                        # max_total_outflow_value = total_outflow
-                        max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len, traffic_45_green)
-                        max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len)
+                # for traffic_45_green in range(60, 181, 30):
+                #     total_outflow = one_simple_simulation(traffic_condition, dict_traffic_coef, traffic_45_green, step_1_len, step_2_len, step_3_len)
+                total_outflow = one_simple_simulation(traffic_condition, dict_traffic_coef,
+                                                      step_1_len=step_1_len, step_2_len=step_2_len, step_3_len=step_3_len)
+                if total_outflow > max_total_outflow_value:
+                    max_total_outflow_value = total_outflow
+                    # max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len, traffic_45_green)
+                    max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len)
     print()
     print(max_total_outflow_tuple)
     print(max_total_outflow_value)
@@ -351,7 +351,7 @@ def main():
     }
     TRAFFIC_CONDITION = "medium"
     # Please call one following function at a time
-    # traffic_simulation_with_plots(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
+    #
     # one_simple_simulation(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
     optimization(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
     # optimization_same_length_123(traffic_condition=TRAFFIC_CONDITION, dict_traffic_coef=DICT_TRAFFIC_COEF)
