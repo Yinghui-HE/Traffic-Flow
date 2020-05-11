@@ -32,6 +32,7 @@ class Road(object):
             self.probability_first_next_road = 0.7
         self.list_of_num_cars_out = []
         self.density_list = []
+        self.velocity_list = []
 
     # return num of cars could still entering that road
     def calculate_spaces_for_more_cars(self):
@@ -82,6 +83,7 @@ class Road(object):
             if len(self.list_of_next_roads) == 0:
                 # end road, cars freely go out of the system
                 self.density_list.append(self.p)
+                self.velocity_list.append(self.u)
                 num_cars_out = self.calculate_num_cars_out(next_road=None, probability_choosing_road=1)
                 self.cars_out(num_cars_out)
                 self.list_of_num_cars_out.append(num_cars_out)
@@ -115,6 +117,7 @@ class Road(object):
 
         self.cars_in(round(self.in_rate, 2))  # unit: num cars per second
         self.density_list.append(self.p)
+        self.velocity_list.append(self.u)
 
     def __str__(self):
         msg = "Road " + self.name + "Info" \

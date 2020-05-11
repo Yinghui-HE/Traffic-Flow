@@ -175,23 +175,36 @@ def traffic_simulation_with_plots(traffic_condition, dict_traffic_coef, traffic_
     print(total_outflow)
 
     # plot densities of roads over time
-    START = 0
-    END = 300
-    TIME = range(START, END)
+    DENSITY_START = 0
+    DENSITY_END = 300
+    DENSITY_TIME = range(DENSITY_START, DENSITY_END)
     list_of_density_lists = []
     road_name_list = []
     for road in list_of_roads:
-        list_of_density_lists.append(road.density_list[START:END])
+        list_of_density_lists.append(road.density_list[DENSITY_START:DENSITY_END])
+        road_name_list.append(road.name)
+        # if need to print the plots seperately for each road, uncomment the next line
+        # plot_graph(road.density_list, time_list, plot_title="Density of road " + road.name + " over time", y_label='density (num cars / ft)')
+    plot_list_of_density_graphs(list_of_density_lists, DENSITY_TIME, road_name_list, traffic_condition)
+
+    # plot velocities of roads over time
+    VELOCITY_START = 0
+    VELOCITY_END = 300
+    VELOCITY_TIME = range(VELOCITY_START, VELOCITY_END)
+    list_of_velocity_lists = []
+    road_name_list = []
+    for road in list_of_roads:
+        list_of_velocity_lists.append(road.velocity_list[VELOCITY_START:VELOCITY_END])
         road_name_list.append(road.name)
         # if need to print the plots seperately for each road, uncomment the next line
         # plot_graph(road.density_list, time_list, plot_title="Density of road " + road.name + " over time", y_label='density (num cars / ft)')
 
-    plot_list_of_density_graphs(list_of_density_lists, TIME, road_name_list, traffic_condition)
+    plot_list_of_density_graphs(list_of_velocity_lists, VELOCITY_TIME, road_name_list, traffic_condition)
 
 
 # called in optimization method (each simulation, without plots)
 def one_simple_simulation(traffic_condition, dict_traffic_coef, traffic_45_green=180, step_1_len=30, step_2_len=30, step_3_len=30, step_4_len=40, ):
-    print("step_1_length=" + str(step_1_len) + ", step_2_length=" + str(step_2_len) + ", step_3_length=" + str(step_3_len) + ", step_4_length=" + str(step_4_len) + ", traffic_45_green=" + str(traffic_45_green))
+    # print("step_1_length=" + str(step_1_len) + ", step_2_length=" + str(step_2_len) + ", step_3_length=" + str(step_3_len) + ", step_4_length=" + str(step_4_len) + ", traffic_45_green=" + str(traffic_45_green))
     in_rate_max = Road.U_MAX / Road.CAR_LENGTH
     traffic_coef_list = dict_traffic_coef[traffic_condition]
     c_coef = traffic_coef_list[0]
@@ -217,7 +230,7 @@ def one_simple_simulation(traffic_condition, dict_traffic_coef, traffic_45_green
     traffic_light_2 = TrafficLight(name="2", green_light_time_len=length_2,
                                    start_green_time_in_cycle=traffic_light_1_left.end_green_time_in_cycle)
     cycle_time_len = traffic_light_2.end_green_time_in_cycle + all_red_time_len
-    print("cycle_time_len=" + str(cycle_time_len))
+    # print("cycle_time_len=" + str(cycle_time_len))
     list_of_dependent_traffic_lights = [traffic_light_1, traffic_light_1_left, traffic_light_2, traffic_light_3]
 
     traffic_light_4 = TrafficLight(name="4", green_light_time_len=traffic_45_green, red_light_time_len=LENGTH_45_RED)
@@ -263,7 +276,7 @@ def one_simple_simulation(traffic_condition, dict_traffic_coef, traffic_45_green
     road_outflow = np.array([road_a.list_of_num_cars_out, road_f.list_of_num_cars_out, road_g.list_of_num_cars_out])
     sum_outflow = road_outflow.sum(axis=0)
     total_outflow = sum_outflow.sum()
-    print(total_outflow)
+    # print(total_outflow)
 
     time_list = range(0, TIME_LENGTH)
     # plot_graph(sum_outflow, time_list, plot_title="Traffic outflow over time", y_label="total traffic (num cars)", traffic_condition=traffic_condition)
@@ -281,14 +294,14 @@ def optimization(traffic_condition, dict_traffic_coef):
     for step_1_len in range(10, 121, 10):
         for step_2_len in range(10, 121, 10):
             for step_3_len in range(10, 121, 10):
-                # for traffic_45_green in range(60, 181, 30):
-                #     total_outflow = one_simple_simulation(traffic_condition, dict_traffic_coef, traffic_45_green, step_1_len, step_2_len, step_3_len)
-                total_outflow = one_simple_simulation(traffic_condition, dict_traffic_coef,
-                                                      step_1_len=step_1_len, step_2_len=step_2_len, step_3_len=step_3_len)
-                if total_outflow > max_total_outflow_value:
-                    max_total_outflow_value = total_outflow
-                    # max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len, traffic_45_green)
-                    max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len)
+                for traffic_45_green in range(60, 181, 30):
+                    total_outflow = one_simple_simulation(traffic_condition, dict_traffic_coef, traffic_45_green, step_1_len, step_2_len, step_3_len)
+                # total_outflow = one_simple_simulation(traffic_condition, dict_traffic_coef,
+                #                                       step_1_len=step_1_len, step_2_len=step_2_len, step_3_len=step_3_len)
+                    if total_outflow > max_total_outflow_value:
+                        # max_total_outflow_value = total_outflow
+                        max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len, traffic_45_green)
+                        max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len)
     print()
     print(max_total_outflow_tuple)
     print(max_total_outflow_value)
@@ -333,7 +346,7 @@ def main():
     # coefficient order: c, d, h
     DICT_TRAFFIC_COEF = {
         "light": [0.2, 0.1, 0.2],
-        "medium": [0.3, 0.6, 0.5],
+        "medium": [0.5, 0.2, 0.7],
         "heavy": [1, 1, 1]
     }
     TRAFFIC_CONDITION = "medium"
