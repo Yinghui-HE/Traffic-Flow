@@ -275,16 +275,21 @@ def one_simple_simulation(traffic_condition, dict_traffic_coef, traffic_45_green
 
 def optimization(traffic_condition, dict_traffic_coef):
     max_total_outflow_value = -1
-    max_total_outflow_tuple = (-1, -1, -1, -1)
+    # max_total_outflow_tuple = (-1, -1, -1, -1)
+    max_total_outflow_tuple = (-1, -1, -1)
 
     for step_1_len in range(10, 121, 10):
         for step_2_len in range(10, 121, 10):
             for step_3_len in range(10, 121, 10):
-                for traffic_45_green in range(60, 181, 30):
-                    total_outflow = one_simple_simulation(traffic_condition, dict_traffic_coef, traffic_45_green, step_1_len, step_2_len, step_3_len)
-                    if total_outflow > max_total_outflow_value:
-                        max_total_outflow_value = total_outflow
                         max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len, traffic_45_green)
+                # for traffic_45_green in range(60, 181, 30):
+                #     total_outflow = one_simple_simulation(traffic_condition, dict_traffic_coef, traffic_45_green, step_1_len, step_2_len, step_3_len)
+                total_outflow = one_simple_simulation(traffic_condition, dict_traffic_coef,
+                                                      step_1_len=step_1_len, step_2_len=step_2_len, step_3_len=step_3_len)
+                if total_outflow > max_total_outflow_value:
+                    max_total_outflow_value = total_outflow
+                    # max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len, traffic_45_green)
+                    max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len)
     print()
     print(max_total_outflow_tuple)
     print(max_total_outflow_value)
