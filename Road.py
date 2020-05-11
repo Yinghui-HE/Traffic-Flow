@@ -57,6 +57,19 @@ class Road(object):
             self.u = -1 * Road.CONST_C * np.log(next_road_density_p / Road.P_MAX)
         return self.u
 
+    def linear_acceleration(self, curr_time, traffic_light_green_time):
+        time = curr_time - traffic_light_green_time
+        # 11.48 ft per seconds = 3.5 m/s^2. Citation: https://hypertextbook.com/facts/2001/MeredithBarricella.shtml
+        return time * 11.48
+
+    def calculate_curr_velocity(self, curr_time, traffic_light_green_time, next_road_density_p, next_road_p_c):
+        curr_acceleration = self.linear_acceleration(curr_time, traffic_light_green_time)
+        possible_max = self.calculate_velocity_u(next_road_density_p, next_road_p_c)
+        if self.u + curr_acceleration < possible_max:
+            self.u += curr_acceleration
+        else:
+            self.u = possible_max
+
     def cars_in(self, num_cars_in):
         self.num_cars = min(round(self.num_cars + num_cars_in, 2), self.NUM_CARS_MAX)
         self.update_density_p()
