@@ -281,7 +281,6 @@ def optimization(traffic_condition, dict_traffic_coef):
     for step_1_len in range(10, 121, 10):
         for step_2_len in range(10, 121, 10):
             for step_3_len in range(10, 121, 10):
-                        max_total_outflow_tuple = (step_1_len, step_2_len, step_3_len, traffic_45_green)
                 # for traffic_45_green in range(60, 181, 30):
                 #     total_outflow = one_simple_simulation(traffic_condition, dict_traffic_coef, traffic_45_green, step_1_len, step_2_len, step_3_len)
                 total_outflow = one_simple_simulation(traffic_condition, dict_traffic_coef,
