@@ -8,4 +8,5 @@ Our findings generally meet our expectations. Under different traffic conditions
 
 
 **Model**
+
 We built a discrete-time model to simulate the traffic in our studied area using object-oriented programming. We took 1 second as our time step and simulated the traffic over a 20 ​minutes period and used the optimization method to find the traffic light strategy that maximizes the net traffic outflow, the number of cars leaving the studied area.
